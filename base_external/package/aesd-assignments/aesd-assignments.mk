@@ -5,9 +5,7 @@
 #
 ##############################################################
 
-# TODO: update this hash after committing/pushing the finder-test.sh PATH fix
-# in aeld-assignment-3-and-later (currently pinned to the last pushed commit).
-AESD_ASSIGNMENTS_VERSION = 0c8303c
+AESD_ASSIGNMENTS_VERSION = e98e13cf857ef46d92a92bb61e7b5f3da42c1509
 # Note: Be sure to reference the *ssh* repository URL here (not https) to work properly
 # with ssh keys and the automated build/test system.
 # Your site should start with git@github.com:
