@@ -1,0 +1,53 @@
+#!/bin/sh
+# S98lddmodules - load/unload the scull, faulty and hello LDD3 kernel
+# modules on startup/shutdown.
+#
+# Customized from the LDD3 reference scull_load/scull_unload and
+# misc-modules module_load/module_unload scripts: modprobe/rmmod is used
+# instead of insmod with a relative ./module.ko path, since the modules
+# are installed into the standard /lib/modules/<release>/ tree by
+# buildroot rather than run from a source build directory.
+
+case "$1" in
+	start)
+		echo "Loading scull"
+		modprobe scull
+		major=$(awk '$2=="scull" {print $1}' /proc/devices)
+		if [ -n "$major" ]; then
+			rm -f /dev/scull0 /dev/scull1 /dev/scull2 /dev/scull3
+			mknod /dev/scull0 c $major 0
+			mknod /dev/scull1 c $major 1
+			mknod /dev/scull2 c $major 2
+			mknod /dev/scull3 c $major 3
+		fi
+
+		echo "Loading faulty"
+		modprobe faulty
+		major=$(awk '$2=="faulty" {print $1}' /proc/devices)
+		if [ -n "$major" ]; then
+			rm -f /dev/faulty
+			mknod /dev/faulty c $major 0
+		fi
+
+		echo "Loading hello"
+		modprobe hello
+		;;
+	stop)
+		echo "Unloading hello"
+		rmmod hello
+
+		echo "Unloading faulty"
+		rmmod faulty
+		rm -f /dev/faulty
+
+		echo "Unloading scull"
+		rmmod scull
+		rm -f /dev/scull0 /dev/scull1 /dev/scull2 /dev/scull3
+		;;
+	*)
+		echo "Usage: $0 {start|stop}"
+		exit 1
+		;;
+esac
+
+exit 0
